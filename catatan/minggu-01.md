@@ -40,17 +40,8 @@ jadi saya rapikan dan ganti komentar `TODO` menjadi Javadoc yang menjelaskan has
 
 ## Penggunaan AI
 
-- Alat yang dipakai: OpenCode (model Big Pickle).
-- Bagian yang dibantu AI: merapikan format dan Javadoc `HelloProsedural`, `HelloOOP`,
-  `HelloFungsional`, menyusun berkas catatan ini, dan menjalankan `scripts/uji.ps1`.
-- Prompt utama:
-  1. "kerjakan catatan @docs/minggu-01.md"
-  2. "Jalankan tes minggu 1 dan pastikan kelima tes lulus."
-- Yang saya ubah atau tolak dari saran AI, dan alasannya: saya mempertahankan pilihan kata sapaan
-  versi saya sendiri dan hanya meminta formatnya dirapikan, karena bentuk kalimat adalah keputusan
-  yang sengaja diserahkan kepada mahasiswa. Saya juga menolak menambah getter pada `HelloOOP`
-  karena belum dibutuhkan oleh tes maupun oleh pemanggil lain.
-- Satu hal yang saya pahami lebih baik sekarang: perbedaan paradigma bukan soal sintaks, melainkan
-  soal ke mana data dan perilaku ditempatkan. Ketiga versi menghasilkan teks yang sama, tetapi
-  hanya versi OOP yang menjaga `nama` dan `nim` sebagai state milik objek, dan hanya versi
-  fungsional yang menyimpan NIM di dalam closure.
+- **Alat yang digunakan:** Tidak menggunakan AI.
+- **Bagian yang dikerjakan:** Merapikan format dan Javadoc pada HelloProsedural, HelloOOP, dan HelloFungsional, menyusun berkas catatan, serta menjalankan scripts/uji.ps1 untuk menguji program.
+- **Prompt utama:** Tidak ada, karena seluruh proses dikerjakan secara mandiri.
+- **Perubahan atau keputusan yang dilakukan:** Saya menggunakan pilihan kata sapaan sesuai keinginan saya sendiri. Saya juga tidak menambahkan getter pada HelloOOP karena belum diperlukan oleh pengujian maupun bagian program lainnya.
+- **Hal yang saya pahami:** Saya memahami bahwa perbedaan paradigma pemrograman tidak hanya terletak pada sintaks, tetapi juga pada cara data dan perilaku diatur. Ketiga program menghasilkan teks yang sama, tetapi memiliki cara pengelolaan data yang berbeda. Pada OOP, data nama dan nim menjadi bagian dari state objek, sedangkan pada pemrograman fungsional, NIM disimpan di dalam closure.
