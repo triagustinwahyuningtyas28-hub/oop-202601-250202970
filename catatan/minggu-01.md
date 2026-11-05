@@ -42,6 +42,6 @@ jadi saya rapikan dan ganti komentar `TODO` menjadi Javadoc yang menjelaskan has
 
 - **Alat yang digunakan:** Tidak menggunakan AI.
 - **Bagian yang dikerjakan:** Merapikan format dan Javadoc pada HelloProsedural, HelloOOP, dan HelloFungsional, menyusun berkas catatan, serta menjalankan scripts/uji.ps1 untuk menguji program.
-- **Prompt utama:** Tidak ada, karena seluruh proses dikerjakan secara mandiri.
+- **Prompt utama:** Tidak ada, karena seluruh proses dikerjakan dengan teman saya.
 - **Perubahan atau keputusan yang dilakukan:** Saya menggunakan pilihan kata sapaan sesuai keinginan saya sendiri. Saya juga tidak menambahkan getter pada HelloOOP karena belum diperlukan oleh pengujian maupun bagian program lainnya.
 - **Hal yang saya pahami:** Saya memahami bahwa perbedaan paradigma pemrograman tidak hanya terletak pada sintaks, tetapi juga pada cara data dan perilaku diatur. Ketiga program menghasilkan teks yang sama, tetapi memiliki cara pengelolaan data yang berbeda. Pada OOP, data nama dan nim menjadi bagian dari state objek, sedangkan pada pemrograman fungsional, NIM disimpan di dalam closure.
