@@ -33,16 +33,13 @@ memastikan melalui tes refleksi bahwa semua field benar-benar private dan tidak 
 dengan `.\scripts\uji.ps1 -Minggu 2` agar tes minggu 2 ikut dijalankan.
 
 
-## Penggunaan dan Pemahaman Materi
+## Penggunaan AI
 
-- Alat yang dipakai: Java dan Visual Studio Code.
-- Bagian yang dikerjakan: Membuat class `Aset` dengan empat atribut private, yaitu `kode`, `nama`, `status`, dan `kondisi`. Menambahkan konstruktor, getter, setter, serta validasi data.
-- Langkah pengerjaan:
-  1. Membuat atribut menggunakan access modifier `private`.
-  2. Menetapkan `kode` sebagai `final` agar tidak dapat diubah.
-  3. Membuat konstruktor untuk memberikan nilai awal pada objek.
-  4. Menambahkan getter dan setter sesuai kebutuhan.
-  5. Menambahkan validasi agar data tidak kosong atau bernilai `null`.
-  6. Menjalankan pengujian Minggu 02 dan memastikan keenam tes berhasil.
-- Keputusan desain: Tidak membuat setter untuk `kode` karena kode merupakan identitas tetap aset. Menggunakan enum untuk membatasi pilihan `status` dan `kondisi`.
-- Satu hal yang saya pahami lebih baik sekarang: Saya memahami bahwa encapsulation digunakan untuk melindungi data dalam sebuah class. Dengan menggunakan `private`, getter, setter, dan validasi, data objek dapat dikontrol sehingga tidak mudah diubah sembarangan dan tetap sesuai aturan.
+- **Alat yang dipakai:** ChatGPT untuk membantu memahami konsep class, object, dan encapsulation serta menyusun catatan pengerjaan.
+- **Bagian yang dibantu AI:** Pembuatan dan pemeriksaan class `Aset`, penggunaan field `private` dan `final`, konstruktor, getter, setter, serta validasi nilai pada setiap field.
+- **Prompt utama:**
+  1. "Bantu saya memahami penerapan encapsulation pada class Aset menggunakan private, getter, dan setter."
+  2. "Bantu periksa validasi konstruktor dan setter agar kode dan nama tidak boleh null atau kosong."
+  3. "Bantu susun catatan pengerjaan Minggu 02 berdasarkan implementasi class Aset."
+- **Yang saya ubah atau tolak dari saran AI, dan alasannya:** Saya mempertahankan nilai `kode` tanpa normalisasi menggunakan `trim()` atau mengubah huruf menjadi kapital karena kode inventaris harus disimpan sesuai nilai aslinya. Saya juga tidak menambahkan setter untuk `kode` karena field tersebut bersifat `final`.
+- **Satu hal yang saya pahami lebih baik sekarang:** Saya lebih memahami konsep encapsulation, yaitu melindungi data dalam class menggunakan `private` dan mengatur akses maupun perubahan data melalui getter dan setter agar objek tetap dalam keadaan valid.
