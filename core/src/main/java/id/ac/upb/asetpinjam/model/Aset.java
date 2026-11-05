@@ -1,5 +1,6 @@
 package id.ac.upb.asetpinjam.model;
 
+import id.ac.upb.asetpinjam.config.Varian;
 import id.ac.upb.asetpinjam.kontrak.DapatDipinjam;
 
 /**
@@ -83,8 +84,23 @@ public class Aset implements DapatDipinjam {
         throw new UnsupportedOperationException("TODO minggu 3");
     }
 
-    /** TODO minggu 4: denda keterlambatan. Dioverride tiap subclass (aturan di docs/aturan-bisnis.md). */
+    /**
+     * Denda keterlambatan untuk aset umum (multiplier 1x).
+     * Dioverride tiap subclass sesuai multiplier jenisnya (aturan di docs/aturan-bisnis.md).
+     */
     public long hitungDenda(int hariTerlambat) {
-        throw new UnsupportedOperationException("TODO minggu 4");
+        return hitungDendaDenganPengali(hariTerlambat, 1);
+    }
+
+    /**
+     * Perhitungan dasar yang dipakai semua subclass.
+     *
+     * @param pengali multiplier jenis aset (Ruang 1, Laptop 2, AlatLab 4)
+     */
+    protected long hitungDendaDenganPengali(int hariTerlambat, int pengali) {
+        if (hariTerlambat < 0) {
+            throw new IllegalArgumentException("Hari terlambat tidak boleh negatif");
+        }
+        return (long) hariTerlambat * pengali * Varian.aktif().dendaPerHari;
     }
 }
