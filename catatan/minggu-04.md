@@ -46,14 +46,13 @@ dengan `toLowerCase(Locale.ROOT)` supaya hasilnya konsisten. Untuk kasus batas, 
 menjalankan `.\scripts\uji.ps1 -Minggu 4` karena `minggu-aktif.txt` masih berisi minggu 1, sehingga
 tes minggu 2 dan 3 ikut dijalankan dan memastikan perubahan minggu ini tidak merusak fitur sebelumnya.
 
-## Penggunaan dan Pemahaman Materi
+## Penggunaan AI
 
-- Alat yang dipakai: Java, Maven, dan Visual Studio Code.
-- Bagian yang dikerjakan:
-  1. Meng-override hitungDenda(int) pada Ruang, Laptop, dan AlatLab.
-  2. Menambahkan metode bantu hitungDendaDenganPengali di Aset untuk validasi dan perhitungan.
-  3. Melengkapi cari(String) dan cari(String, JenisAset) di KatalogAset.
-  4. Menjalankan tes minggu 1 sampai 4 dan memastikan 27 tes berhasil.
-- Satu hal yang saya pahami lebih baik sekarang: overriding membuat objek dari subclass yang berbeda
-  dapat dipanggil melalui tipe induk yang sama, tetapi perilakunya tetap sesuai kelas masing-masing.
-  Overloading berbeda karena hanya mengganti daftar parameter, bukan isi perilaku turunan.
+- **Alat yang dipakai:** ChatGPT untuk membantu memahami konsep polymorphism, memberikan saran implementasi kode, dan menyusun catatan praktikum.
+- **Bagian yang dibantu AI:** Implementasi metode `hitungDenda(int)` pada class `Aset`, `Ruang`, `Laptop`, dan `AlatLab`, metode bantu `hitungDendaDenganPengali`, serta dua metode overloading `cari(...)` pada class `KatalogAset`.
+- **Prompt utama:**
+  1. "Jelaskan dan bantu implementasikan konsep polymorphism menggunakan overriding pada class Aset, Ruang, Laptop, dan AlatLab."
+  2. "Bantu buat metode perhitungan denda dengan multiplier berbeda untuk setiap subclass."
+  3. "Bantu implementasikan overloading metode cari berdasarkan nama dan jenis aset pada class KatalogAset."
+- **Yang saya ubah atau tolak dari saran AI, dan alasannya:** Saya menyesuaikan kode agar setiap subclass menggunakan multiplier sesuai ketentuan, yaitu Ruang 1x, Laptop 2x, dan AlatLab 4x. Saya juga memastikan validasi hari negatif, penggunaan Locale.ROOT, dan tipe data long agar perhitungan lebih aman.
+- **Satu hal yang saya pahami lebih baik sekarang:** Saya lebih memahami perbedaan overriding dan overloading serta cara kerja polymorphism. Overriding memungkinkan subclass memiliki implementasi metode yang berbeda, sedangkan overloading memungkinkan beberapa metode memiliki nama sama dengan parameter berbeda.
