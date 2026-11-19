@@ -1,0 +1,44 @@
+
+sequenceDiagram
+    title Sequence Diagram - Pengajuan Peminjaman (Minggu 6)
+
+    actor User as Peminjam (aktor)
+    participant Peminjaman as Peminjaman (model)
+    participant Aset as Aset (model)
+    participant Jadwal as JadwalPeminjaman (jadwal)
+    participant Bentrok as PeminjamanBentrokException (exception)
+
+    User->>Peminjaman: new Peminjaman(id, peminjam, aset, mulai, selesai)
+    activate Peminjaman
+
+    Peminjaman->>Peminjaman: cek null dan selesai.isAfter(mulai)
+    Peminjaman-->>User: p (status awal DIAJUKAN)
+    deactivate Peminjaman
+
+    User->>Jadwal: ajukan(p)
+    activate Jadwal
+
+    Jadwal->>Aset: getKode()
+    Aset-->>Jadwal: kodeAset
+
+    Jadwal->>Jadwal: bentrok(p)
+    Note right of Jadwal: Cek aset sama dan rentang waktu tumpang tindih<br/>Implementasi masih TODO minggu 7
+
+    alt Sukses - tidak bentrok dan kuota tersedia
+        Jadwal->>Jadwal: tambah(p)
+        Note right of Jadwal: daftar.add(p)<br/>Status tetap DIAJUKAN
+        Jadwal-->>User: void - pengajuan tersimpan di jadwal
+
+    else Bentrok - aset sudah digunakan pada rentang waktu yang tumpang tindih
+        Jadwal->>Bentrok: new PeminjamanBentrokException()
+        activate Bentrok
+        Bentrok-->>Jadwal: e (pesan menyebut kodeAset - TODO minggu 9)
+        deactivate Bentrok
+
+        Jadwal--xUser: Lempar e - jadwal tidak berubah
+        Note right of Bentrok: AsetPinjamException<br/>↓<br/>PeminjamanBentrokException
+    end
+
+    deactivate Jadwal
+
+    Note over User,Jadwal: Pemeriksaan kuota laptop (KuotaHabisException)<br/>juga bagian dari ajukan() minggu 9.<br/>Tidak digambarkan agar fokus pada skenario bentrok.
