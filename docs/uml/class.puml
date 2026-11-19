@@ -1,0 +1,336 @@
+@startuml
+title Class Diagram — Aset-Pinjam (modul core, minggu 6)
+
+' Sumber: kode di core/src/main/java (keadaan minggu 6).
+' Method bertanda TODO minggu 7/9/10/11 memang masih berisi UnsupportedOperationException
+' di kode; signature-nya sudah ada dan dipakai apa adanya di diagram ini.
+' Paket api/ (minggu 12+) sengaja tidak dimasukkan dalam diagram ini.
+
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+skinparam noteBackgroundColor #FFF8DC
+
+package "id.ac.upb.asetpinjam.model" as MODEL {
+
+  abstract class Aset {
+    - kode : String
+    - nama : String
+    - status : StatusAset
+    - kondisi : Kondisi
+    + Aset(kode : String, nama : String)
+    + getKode() : String
+    + getNama() : String
+    + getStatus() : StatusAset
+    + getKondisi() : Kondisi
+    + setNama(nama : String) : void
+    + setStatus(status : StatusAset) : void
+    + setKondisi(kondisi : Kondisi) : void
+    + bisaDipinjam() : boolean
+    + getJenis() : JenisAset
+    + {abstract} hitungDenda(hariTerlambat : int) : long
+    # hitungDendaDenganPengali(hariTerlambat : int, pengali : int) : long
+  }
+
+  class Ruang {
+    - kapasitas : int
+    + Ruang(kode : String, nama : String, kapasitas : int)
+    + getKapasitas() : int
+    + getJenis() : JenisAset
+    + hitungDenda(hariTerlambat : int) : long
+  }
+
+  class Laptop {
+    - spesifikasi : String
+    - nomorInventaris : String
+    + Laptop(kode : String, nama : String, spesifikasi : String, nomorInventaris : String)
+    + getSpesifikasi() : String
+    + getNomorInventaris() : String
+    + getJenis() : JenisAset
+    + hitungDenda(hariTerlambat : int) : long
+  }
+
+  class AlatLab {
+    - laboratorium : String
+    - tingkatRisiko : TingkatRisiko
+    + AlatLab(kode : String, nama : String, laboratorium : String, tingkatRisiko : TingkatRisiko)
+    + getLaboratorium() : String
+    + getTingkatRisiko() : TingkatRisiko
+    + getJenis() : JenisAset
+    + hitungDenda(hariTerlambat : int) : long
+  }
+
+  class Peminjam <<record>> {
+    - id : String
+    - nama : String
+    + Peminjam(id : String, nama : String)
+  }
+
+  class Peminjaman {
+    - id : String
+    - peminjam : Peminjam
+    - aset : Aset
+    - mulai : LocalDateTime
+    - selesai : LocalDateTime
+    - status : StatusPeminjaman
+    + Peminjaman(id : String, peminjam : Peminjam, aset : Aset, mulai : LocalDateTime, selesai : LocalDateTime)
+    + getId() : String
+    + getPeminjam() : Peminjam
+    + getAset() : Aset
+    + getMulai() : LocalDateTime
+    + getSelesai() : LocalDateTime
+    + getStatus() : StatusPeminjaman
+    + setStatusDariPenyimpanan(status : StatusPeminjaman) : void
+    + ubahStatus(baru : StatusPeminjaman) : void
+  }
+
+  enum StatusAset {
+    TERSEDIA
+    DIPINJAM
+    RUSAK
+  }
+
+  enum Kondisi {
+    BAIK
+    RUSAK_RINGAN
+    RUSAK_BERAT
+  }
+
+  enum JenisAset {
+    RUANG
+    LAPTOP
+    ALAT_LAB
+  }
+
+  enum TingkatRisiko {
+    RENDAH
+    SEDANG
+    TINGGI
+  }
+
+  enum StatusPeminjaman {
+    DIAJUKAN
+    DISETUJUI
+    DITOLAK
+    DIBATALKAN
+    DIPINJAM
+    TERLAMBAT
+    DIKEMBALIKAN
+  }
+}
+
+package "id.ac.upb.asetpinjam.kontrak" as KONTRAK {
+
+  interface DapatDipinjam {
+    + bisaDipinjam() : boolean
+  }
+
+  interface AturanDenda {
+    + hitung(aset : Aset, hariTerlambat : int) : long
+  }
+}
+
+package "id.ac.upb.asetpinjam.jadwal" as JADWAL {
+
+  class JadwalPeminjaman {
+    - daftar : List<Peminjaman>
+    - kuotaLaptop : int
+    + JadwalPeminjaman(kuotaLaptop : int)
+    # kuotaLaptop() : int
+    # daftarMutable() : List<Peminjaman>
+    + tambah(p : Peminjaman) : void
+    + bentrok(baru : Peminjaman) : boolean
+    + semuaUrutMulai() : List<Peminjaman>
+    + perAset() : Map<String, List<Peminjaman>>
+    + hapus(id : String) : boolean
+    + ajukan(baru : Peminjaman) : void
+  }
+}
+
+package "id.ac.upb.asetpinjam.katalog" as KATALOG {
+
+  class KatalogAset {
+    - daftar : List<Aset>
+    + KatalogAset()
+    + tambah(aset : Aset) : void
+    + semua() : List<Aset>
+    + cari(kata : String) : List<Aset>
+    + cari(kata : String, jenis : JenisAset) : List<Aset>
+  }
+}
+
+package "id.ac.upb.asetpinjam.denda" as DENDA {
+
+  class DendaFlat {
+    + DendaFlat()
+    + hitung(aset : Aset, hariTerlambat : int) : long
+  }
+
+  class DendaProgresif {
+    + DendaProgresif()
+    + hitung(aset : Aset, hariTerlambat : int) : long
+  }
+
+  class LayananDenda {
+    - aturan : AturanDenda
+    + LayananDenda(aturan : AturanDenda)
+    + hitung(aset : Aset, hariTerlambat : int) : long
+  }
+}
+
+package "id.ac.upb.asetpinjam.factory" as FACTORY {
+
+  class AsetFactory <<final>> {
+    - AsetFactory()
+    + {static} buat(jenis : JenisAset, kode : String, nama : String, atribut : String...) : Aset
+  }
+}
+
+package "id.ac.upb.asetpinjam.config" as CONFIG {
+
+  class Varian <<final>> {
+    - {static} DENDA_PER_HARI : int[]
+    - {static} BATAS_DURASI_JAM : int[]
+    - {static} KUOTA_LAPTOP : int[]
+    - {static} aktif : Varian
+    + nim : String
+    + nama : String
+    + dendaPerHari : int
+    + batasDurasiJam : int
+    + kuotaLaptop : int
+    - Varian(nim : String, nama : String)
+    + {static} dariNim(nim : String, nama : String) : Varian
+    + {static} aktif() : Varian
+  }
+}
+
+package "id.ac.upb.asetpinjam.exception" as EXCEPTION {
+
+  class AsetPinjamException {
+    + AsetPinjamException(pesan : String)
+    + AsetPinjamException(pesan : String, sebab : Throwable)
+  }
+
+  class PeminjamanBentrokException {
+    + PeminjamanBentrokException()
+  }
+
+  class KuotaHabisException {
+    + KuotaHabisException()
+  }
+
+  class StatusTidakSahException {
+    + StatusTidakSahException()
+  }
+
+  class DataAksesException {
+    + DataAksesException(pesan : String, sebab : Throwable)
+  }
+}
+
+package "id.ac.upb.asetpinjam.dao" as DAO {
+
+  interface AsetDAO {
+    + simpan(aset : Aset) : void
+    + cariByKode(kode : String) : Optional<Aset>
+    + semua() : List<Aset>
+    + perbarui(aset : Aset) : void
+    + hapus(kode : String) : boolean
+  }
+
+  interface PeminjamanDAO {
+    + simpan(peminjaman : Peminjaman) : void
+    + cariById(id : String) : Optional<Peminjaman>
+    + perbaruiStatus(id : String, status : StatusPeminjaman) : boolean
+  }
+
+  class JdbcAsetDAO {
+    - sumberKoneksi : Supplier<Connection>
+    + JdbcAsetDAO(sumberKoneksi : Supplier<Connection>)
+    + simpan(aset : Aset) : void
+    + cariByKode(kode : String) : Optional<Aset>
+    + semua() : List<Aset>
+    + perbarui(aset : Aset) : void
+    + hapus(kode : String) : boolean
+  }
+
+  class JdbcPeminjamanDAO {
+    - sumberKoneksi : Supplier<Connection>
+    - asetDao : AsetDAO
+    + JdbcPeminjamanDAO(sumberKoneksi : Supplier<Connection>, asetDao : AsetDAO)
+    + simpan(peminjaman : Peminjaman) : void
+    + cariById(id : String) : Optional<Peminjaman>
+    + perbaruiStatus(id : String, status : StatusPeminjaman) : boolean
+  }
+
+  class Koneksi <<final>> {
+    - Koneksi()
+    + {static} baru() : Connection
+  }
+}
+
+class RuntimeException <<Java API>> {
+}
+
+' ---- Relasi ----
+Aset ..|> DapatDipinjam
+Aset <|-- Ruang
+Aset <|-- Laptop
+Aset <|-- AlatLab
+AlatLab --> TingkatRisiko : tingkatRisiko
+
+Peminjaman "1" --> "1" Peminjam : peminjam
+Peminjaman "1" --> "1" Aset : aset
+Peminjaman "1" --> "1" StatusPeminjaman : status
+Peminjaman ..> StatusTidakSahException : <<throw>> (TODO minggu 9)
+
+JadwalPeminjaman "1" o-- "0..*" Peminjaman : daftar
+JadwalPeminjaman ..> PeminjamanBentrokException : <<throw>> (TODO minggu 9)
+JadwalPeminjaman ..> KuotaHabisException : <<throw>> (TODO minggu 9)
+
+KatalogAset "1" o-- "0..*" Aset : daftar
+KatalogAset ..> JenisAset : filter cari()
+
+AturanDenda ..> Aset : parameter hitung()
+DendaFlat ..|> AturanDenda
+DendaProgresif ..|> AturanDenda
+LayananDenda "1" o-- "1" AturanDenda : aturan (disuntikkan)
+LayananDenda ..> Aset : parameter hitung()
+
+AsetFactory ..> Aset : buat()
+AsetFactory ..> JenisAset
+Aset ..> Varian : Varian.aktif().dendaPerHari
+
+AsetDAO <|.. JdbcAsetDAO
+PeminjamanDAO <|.. JdbcPeminjamanDAO
+JdbcPeminjamanDAO "1" o-- "1" AsetDAO : asetDao
+AsetDAO ..> Aset
+PeminjamanDAO ..> Peminjaman
+PeminjamanDAO ..> StatusPeminjaman
+JdbcAsetDAO ..> Aset
+JdbcPeminjamanDAO ..> Peminjaman
+Koneksi ..> DataAksesException
+
+RuntimeException <|-- AsetPinjamException
+AsetPinjamException <|-- PeminjamanBentrokException
+AsetPinjamException <|-- KuotaHabisException
+AsetPinjamException <|-- StatusTidakSahException
+AsetPinjamException <|-- DataAksesException
+
+note right of JadwalPeminjaman
+  bentrok(), semuaUrutMulai(), perAset(),
+  hapus(), dan ajukan() masih TODO minggu 7/9.
+  tambah() sudah aktif: daftar.add(p).
+end note
+
+note bottom of Peminjaman
+  status awal = DIAJUKAN.
+  ubahStatus() masih TODO minggu 9.
+end note
+
+note bottom of LayananDenda
+  Refactor minggu 6: aturan disimpan
+  sebagai field final dan disuntikkan
+  lewat konstruktor (DIP).
+end note
+
+@enduml

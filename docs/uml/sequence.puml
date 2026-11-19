@@ -1,0 +1,49 @@
+@startuml
+title Sequence Diagram — Pengajuan Peminjaman (minggu 6)
+
+' Keadaan kode minggu 6:
+'  - Peminjaman(konstruktor) dan JadwalPeminjaman.tambah(p) sudah berjalan.
+'  - bentrok() dan ajukan() sudah dideklarasikan, tetapi isinya masih TODO minggu 7/9.
+'  - PeminjamanBentrokException sudah ada, pesan jelasnya masih TODO minggu 9.
+' Diagram ini memakai nama kelas dan signature yang benar-benar ada di kode,
+' dan menggambarkan kontrak pengajuan sesuai docs/aturan-bisnis.md aturan 4.
+
+actor "Peminjam (aktor)" as User
+participant "Peminjaman\n(model)" as Peminjaman
+participant "Aset\n(model)" as Aset
+participant "JadwalPeminjaman\n(jadwal)" as Jadwal
+participant "PeminjamanBentrokException\n(exception)" as Bentrok
+
+User -> Peminjaman: new Peminjaman(id, peminjam, aset, mulai, selesai)
+activate Peminjaman
+Peminjaman -> Peminjaman: cek null & selesai.isAfter(mulai)
+Peminjaman --> User: p (status awal DIAJUKAN)
+deactivate Peminjaman
+
+User -> Jadwal: ajukan(p)
+activate Jadwal
+Jadwal -> Aset: getKode()
+Aset --> Jadwal: kodeAset
+Jadwal -> Jadwal: bentrok(p)
+note right: cek aset sama dan rentang waktu tumpang tindih\n(implementasi: TODO minggu 7)
+
+alt sukses — tidak bentrok (dan kuota laptop masih tersedia)
+    Jadwal -> Jadwal: tambah(p)
+    note right: daftar.add(p); status tetap DIAJUKAN
+    Jadwal --> User: void — pengajuan tersimpan di jadwal
+else bentrok — aset berkode kodeAset sudah dipakai pada rentang yang tumpang tindih
+    Jadwal -> Bentrok: new PeminjamanBentrokException()
+    Bentrok --> Jadwal: e (pesan menyebut kodeAset — TODO minggu 9)
+    Jadwal --x User: lempar e — jadwal tidak berubah
+    note right over Bentrok: AsetPinjamException -> PeminjamanBentrokException
+end
+
+deactivate Jadwal
+
+note over User, Jadwal
+  Pemeriksaan kuota laptop (KuotaHabisException)
+  juga bagian dari ajukan() minggu 9; tidak digambarkan
+  supaya fragmen alt tetap fokus pada skenario bentrok.
+end note
+
+@enduml
